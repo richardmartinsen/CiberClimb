@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CiberClimb", "CiberClimb\CiberClimb.csproj", "{6ABD31FD-D439-40C7-8458-C6C2E139E30D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CiberClimbApi", "CiberClimbApi\CiberClimbApi.csproj", "{BCB97B44-1460-4A9A-8C27-E077809645F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6ABD31FD-D439-40C7-8458-C6C2E139E30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ABD31FD-D439-40C7-8458-C6C2E139E30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ABD31FD-D439-40C7-8458-C6C2E139E30D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCB97B44-1460-4A9A-8C27-E077809645F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCB97B44-1460-4A9A-8C27-E077809645F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCB97B44-1460-4A9A-8C27-E077809645F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCB97B44-1460-4A9A-8C27-E077809645F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

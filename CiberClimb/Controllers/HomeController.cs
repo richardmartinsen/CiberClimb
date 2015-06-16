@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using CiberClimb.Models;
+using Newtonsoft.Json;
 
 namespace CiberClimb.Controllers
 {
@@ -13,13 +16,11 @@ namespace CiberClimb.Controllers
     {
         public ActionResult Index()
         {
-            string data = "";
-            string url = "http://www.klatrekonge.com/herrer-oslo";
+            const string url = "http://www.klatrekonge.com/herrer-oslo";
 
             var climberList = new List<ClimberModels>();
-            using (HttpClient client = new HttpClient())
+            using (var client = new HttpClient())
             {
-                var time = DateTime.UtcNow;
                 var ciberNames = new[] { "Mathias Moen", "Richard Martinsen", "Joakim Bjerkheim" };
 
                 try
@@ -56,25 +57,22 @@ namespace CiberClimb.Controllers
                     }).ToList();
 
                     var ciberClimbers = climbers.Where(x => ciberNames.Contains(x.Name)).ToList();
-                    StringBuilder sb = new StringBuilder();
-                    //data = climbers.ToString();
                     foreach (var rider in ciberClimbers)
                     {
-
-                        var cmodel = new ClimberModels();
-                        cmodel.Name = rider.Name;
-                        cmodel.Place = rider.Place;
-                        cmodel.KongsveienPoints = rider.KongsveienPoints;
-                        cmodel.KongsveienTime = rider.KongsveienTime;
-                        cmodel.TryvannPoints = rider.TryvannPoints;
-                        cmodel.TryvannTime = rider.TryvannTime;
-                        cmodel.GrefsenPoint = rider.GrefsenPoints;
-                        cmodel.GrefsenTime = rider.GrefsenTime;
-                        cmodel.TotalPoints = rider.TotalPoints;
+                        var cmodel = new ClimberModels
+                        {
+                            Name = rider.Name,
+                            Place = rider.Place,
+                            KongsveienPoints = rider.KongsveienPoints,
+                            KongsveienTime = rider.KongsveienTime,
+                            TryvannPoints = rider.TryvannPoints,
+                            TryvannTime = rider.TryvannTime,
+                            GrefsenPoint = rider.GrefsenPoints,
+                            GrefsenTime = rider.GrefsenTime,
+                            TotalPoints = rider.TotalPoints
+                        };
                         climberList.Add(cmodel);
-                        //sb.AppendLine(rider.Name);
                     }
-                    //data = sb.ToString();
                 }
                 catch (Exception e)
                 {
@@ -101,7 +99,72 @@ namespace CiberClimb.Controllers
         {
             ViewBag.Message = "Your contact page.";
 
+            //string urlWithAccessToken = "https://cibernordic.slack.com/services/hooks/incoming-webhook?token={your_access_token}";
+            string urlWithAccessToken = "https://hooks.slack.com/services/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";
+	
+	        SlackClient client = new SlackClient(urlWithAccessToken);
+	
+	        client.PostMessage(username: "Mr. Torgue",
+			                       text: "THIS IS A TEST MESSAGE! SQUEEDLYBAMBLYFEEDLYMEEDLYMOWWWWWWWW!",
+			                    channel: "#bot-test");
+
             return View();
         }
     }
+ 
+//A simple C# class to post messages to a Slack channel
+//Note: This class uses the Newtonsoft Json.NET serializer available via NuGet
+public class SlackClient
+{
+	private readonly Uri _uri;
+	private readonly Encoding _encoding = new UTF8Encoding();
+	
+	public SlackClient(string urlWithAccessToken)
+	{
+		_uri = new Uri(urlWithAccessToken);
+	}
+	
+	//Post a message using simple strings
+	public void PostMessage(string text, string username = null, string channel = null)
+	{
+		Payload payload = new Payload()
+		{
+			Channel = channel,
+			Username = username,
+			Text = text
+		};
+		
+		PostMessage(payload);
+	}
+	
+	//Post a message using a Payload object
+	public void PostMessage(Payload payload)
+	{
+		string payloadJson = JsonConvert.SerializeObject(payload);
+		
+		using (WebClient client = new WebClient())
+		{
+			NameValueCollection data = new NameValueCollection();
+			data["payload"] = payloadJson;
+	
+			var response = client.UploadValues(_uri, "POST", data);
+			
+			//The response text is usually "ok"
+			string responseText = _encoding.GetString(response);
+		}
+	}
+}
+ 
+//This class serializes into the Json payload required by Slack Incoming WebHooks
+public class Payload
+{
+	[JsonProperty("channel")]
+	public string Channel { get; set; }
+	
+	[JsonProperty("username")]
+	public string Username { get; set; }
+	
+	[JsonProperty("text")]
+	public string Text { get; set; }
+}
 }
