@@ -26,10 +26,22 @@ namespace CiberClimbApi.Controllers
 
             foreach (var rider in climbers)
             {
-                tekst += rider.Name;
-                tekst += " ";
-                tekst += rider.TotalPoints;
                 tekst += "\n";
+                tekst += rider.Place;
+                tekst += rider.Name;
+                tekst += rider.KongsveienPoints;
+                tekst += " (";
+                tekst += rider.KongsveienTime;
+                tekst += ") ";
+                tekst += rider.GrefsenPoint;
+                tekst += " (";
+                tekst += rider.GrefsenTime;
+                tekst += ") ";
+                tekst += rider.TryvannPoints;
+                tekst += " (";
+                tekst += rider.TryvannTime;
+                tekst += ") ";
+                tekst += rider.TotalPoints;
             }
 
             client.PostMessage(username: "Sykkelbot",
