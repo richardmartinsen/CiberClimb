@@ -23,10 +23,9 @@ namespace CiberClimbApi.Controllers
 
             var climbers = this.GetClimberModels();
             var tekst = string.Empty;
-
+            tekst += "\n\n Plass    Navn    Kongsveien  Grefsen Tryvann Total";
             foreach (var rider in climbers)
             {
-                tekst += "\n";
                 tekst += rider.Place;
                 tekst += rider.Name;
                 tekst += rider.KongsveienPoints;
@@ -42,6 +41,7 @@ namespace CiberClimbApi.Controllers
                 tekst += rider.TryvannTime;
                 tekst += ") ";
                 tekst += rider.TotalPoints;
+                tekst += "\n";
             }
 
             client.PostMessage(username: "Sykkelbot",
