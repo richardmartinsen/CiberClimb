@@ -23,10 +23,11 @@ namespace CiberClimbApi.Controllers
 
             var climbers = this.GetClimberModels();
             var tekst = string.Empty;
-            tekst += "\n\n 'Plass    Navn    Kongsveien  Grefsen Tryvann Total' \n";
+            tekst += ".\n\n Plass    Navn            Kongsveien  Grefsen Tryvann Total \n";
             foreach (var rider in climbers)
             {
                 tekst += rider.Place;
+                tekst += "   ";
                 tekst += rider.Name;
                 tekst += rider.KongsveienPoints;
                 tekst += " (";
