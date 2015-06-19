@@ -5,16 +5,53 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Web;
-using System.Web.Mvc;
-using CiberClimb.Models;
+using System.Web.Http;
 using Newtonsoft.Json;
 
-namespace CiberClimb.Controllers
+namespace CiberClimbApi.Controllers
 {
-    public class HomeController : Controller
+    using CiberClimb.Models;
+
+    public class ClimbController : ApiController
     {
-        public ActionResult Index()
+        [HttpPost]
+        public string Post()
+        {
+            string urlWithAccessToken = "https://hooks.slack.com/services/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";
+
+            SlackClient client = new SlackClient(urlWithAccessToken);
+
+            var climbers = this.GetClimberModels();
+            var tekst = string.Empty;
+            tekst += ".\n\n Plass    Navn            Kongsveien  Grefsen Tryvann Total \n";
+            foreach (var rider in climbers)
+            {
+                tekst += rider.Place;
+                tekst += "   ";
+                tekst += rider.Name;
+                tekst += rider.KongsveienPoints;
+                tekst += " (";
+                tekst += rider.KongsveienTime;
+                tekst += ") ";
+                tekst += rider.GrefsenPoint;
+                tekst += " (";
+                tekst += rider.GrefsenTime;
+                tekst += ") ";
+                tekst += rider.TryvannPoints;
+                tekst += " (";
+                tekst += rider.TryvannTime;
+                tekst += ") ";
+                tekst += rider.TotalPoints;
+                tekst += "\n";
+            }
+
+            client.PostMessage(username: "Sykkelbot",
+                                   text: tekst,
+                                channel: "#bot-test");
+            return "ok";
+        }
+
+        public List<ClimberModels> GetClimberModels()
         {
             const string url = "http://www.klatrekonge.com/herrer-oslo";
 
@@ -85,35 +122,39 @@ namespace CiberClimb.Controllers
                 //data = client.DownloadString(url);
             }
 
-            return View(climberList);
-        }
+            return climberList;
+        } 
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
 
-            return View();
-        }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
+        //// GET api/values
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
-            //string urlWithAccessToken = "https://cibernordic.slack.com/services/hooks/incoming-webhook?token={your_access_token}";
-            string urlWithAccessToken = "https://hooks.slack.com/services/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";
+        //// GET api/values/5
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
-            SlackClient client = new SlackClient(urlWithAccessToken);
+        //// POST api/values
+        //public void Post([FromBody]string value)
+        //{
+        //}
 
-            client.PostMessage(username: "Mr. Torgue",
-                                   text: "THIS IS A TEST MESSAGE! SQUEEDLYBAMBLYFEEDLYMEEDLYMOWWWWWWWW!",
-                                channel: "#bot-test");
+        //// PUT api/values/5
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
 
-            return View();
-        }
+        //// DELETE api/values/5
+        //public void Delete(int id)
+        //{
+        //}
     }
 
-    //A simple C# class to post messages to a Slack channel
-    //Note: This class uses the Newtonsoft Json.NET serializer available via NuGet
     public class SlackClient
     {
         private readonly Uri _uri;
@@ -153,18 +194,19 @@ namespace CiberClimb.Controllers
                 string responseText = _encoding.GetString(response);
             }
         }
-    }
 
-    //This class serializes into the Json payload required by Slack Incoming WebHooks
-    public class Payload
-    {
-        [JsonProperty("channel")]
-        public string Channel { get; set; }
 
-        [JsonProperty("username")]
-        public string Username { get; set; }
+        //This class serializes into the Json payload required by Slack Incoming WebHooks
+        public class Payload
+        {
+            [JsonProperty("channel")]
+            public string Channel { get; set; }
 
-        [JsonProperty("text")]
-        public string Text { get; set; }
+            [JsonProperty("username")]
+            public string Username { get; set; }
+
+            [JsonProperty("text")]
+            public string Text { get; set; }
+        }
     }
 }
