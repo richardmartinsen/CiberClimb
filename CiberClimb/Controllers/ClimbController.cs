@@ -27,7 +27,6 @@ namespace CiberClimbApi.Controllers
 
             tekst += "```";
             tekst += String.Format("{0,-10} {1,-20} {2,-10} {3,-10} {4,-10} {5,-10}\n", "Plass", "Navn", "Kongsveien", "Grefsen", "Tryvann", "Total");
-            //tekst += ".\n\n Plass    Navn            Kongsveien  Grefsen Tryvann Total \n";
             foreach (var rider in climbers)
             {
                 var kongsveien = rider.KongsveienPoints + "(" + rider.KongsveienTime + ")";
@@ -67,10 +66,10 @@ namespace CiberClimbApi.Controllers
                         var columns = x.Descendants("td").ToList();
                         var kongsveienPointsColumn = columns[2].Descendants("b").FirstOrDefault();
                         var kongsveienTimeColumn = columns[2].Descendants("a").FirstOrDefault();
-                        var tryvannPointsColumn = columns[3].Descendants("b").FirstOrDefault();
-                        var tryvannTimeColumn = columns[3].Descendants("a").FirstOrDefault();
-                        var grefsenPointsColumn = columns[4].Descendants("b").FirstOrDefault();
-                        var grefsenTimeColumn = columns[4].Descendants("a").FirstOrDefault();
+                        var grefsenPointsColumn = columns[3].Descendants("b").FirstOrDefault();
+                        var grefsenTimeColumn = columns[3].Descendants("a").FirstOrDefault();
+                        var tryvannPointsColumn = columns[4].Descendants("b").FirstOrDefault();
+                        var tryvannTimeColumn = columns[4].Descendants("a").FirstOrDefault();
                         return new
                         {
                             Place = columns[0].InnerText,
