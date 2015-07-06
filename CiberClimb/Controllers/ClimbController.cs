@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
+using System.Xml.Schema;
 using Newtonsoft.Json;
 
 namespace CiberClimbApi.Controllers
@@ -23,32 +24,23 @@ namespace CiberClimbApi.Controllers
 
             var climbers = this.GetClimberModels();
             var tekst = string.Empty;
-            tekst += ".\n\n Plass    Navn            Kongsveien  Grefsen Tryvann Total \n";
+
+            tekst += "```";
+            tekst += String.Format("{0,-10} {1,-20} {2,-10} {3,-10} {4,-10} {5,-10}\n", "Plass", "Navn", "Kongsveien", "Grefsen", "Tryvann", "Total");
+            //tekst += ".\n\n Plass    Navn            Kongsveien  Grefsen Tryvann Total \n";
             foreach (var rider in climbers)
             {
-                tekst += rider.Place;
-                tekst += "   ";
-                tekst += rider.Name;
-                tekst += rider.KongsveienPoints;
-                tekst += " (";
-                tekst += rider.KongsveienTime;
-                tekst += ") ";
-                tekst += rider.GrefsenPoint;
-                tekst += " (";
-                tekst += rider.GrefsenTime;
-                tekst += ") ";
-                tekst += rider.TryvannPoints;
-                tekst += " (";
-                tekst += rider.TryvannTime;
-                tekst += ") ";
-                tekst += rider.TotalPoints;
-                tekst += "\n";
+                var kongsveien = rider.KongsveienPoints + "(" + rider.KongsveienTime + ")";
+                var grefsen = rider.GrefsenPoint + "(" + rider.GrefsenTime + ")";
+                var tryvann = rider.TryvannPoints + "(" + rider.TryvannTime + ")";
+                tekst += String.Format("{0,-10} {1,-20} {2,-10} {3,-10} {4,-10} {5,-10}\n", rider.Place, rider.Name, kongsveien, grefsen, tryvann, rider.TotalPoints);
             }
+            tekst += "```";
 
             client.PostMessage(username: "Sykkelbot",
                                    text: tekst,
-                                channel: "#bot-test");
-            return "ok";
+                                channel: "#sykkelgruppa");
+            return tekst;
         }
 
         public List<ClimberModels> GetClimberModels()
