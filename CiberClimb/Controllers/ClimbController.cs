@@ -22,11 +22,7 @@ namespace CiberClimbApi.Controllers
 
             SlackClient client = new SlackClient(urlWithAccessToken);
 
-            var climbers = this.GetClimberModels(1);
-            for (int i = 1; i < 3; i++)
-            {
-                climbers.AddRange(this.GetClimberModels(i));
-            }
+            var climbers = this.GetClimberModels();
             var tekst = string.Empty;
 
             tekst += "```";
@@ -46,9 +42,9 @@ namespace CiberClimbApi.Controllers
             return tekst;
         }
 
-        public List<ClimberModels> GetClimberModels(int page)
+        public List<ClimberModels> GetClimberModels()
         {
-            string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
+            //string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
 
             var climberList = new List<ClimberModels>();
             using (var client = new HttpClient())
@@ -57,53 +53,76 @@ namespace CiberClimbApi.Controllers
 
                 try
                 {
-                    var result = client.GetStreamAsync(url).Result;
-                    var doc = new HtmlAgilityPack.HtmlDocument();
-                    doc.Load(result, Encoding.GetEncoding("ISO-8859-1"));
-                    var tables = doc.DocumentNode.Descendants("table").ToList();
-
-                    var table =
-                        tables.First(
-                            x => x.Attributes.Any(y => y.Name == "class" && y.Value == "table table-condensed leaderboard"));
-                    var climbers = table.Descendants("tr").Skip(1).Select(x =>
+                    for (int page = 0; page < 3; page++)
                     {
-                        var columns = x.Descendants("td").ToList();
-                        var kongsveienPointsColumn = columns[2].Descendants("b").FirstOrDefault();
-                        var kongsveienTimeColumn = columns[2].Descendants("a").FirstOrDefault();
-                        var grefsenPointsColumn = columns[3].Descendants("b").FirstOrDefault();
-                        var grefsenTimeColumn = columns[3].Descendants("a").FirstOrDefault();
-                        var tryvannPointsColumn = columns[4].Descendants("b").FirstOrDefault();
-                        var tryvannTimeColumn = columns[4].Descendants("a").FirstOrDefault();
-                        return new
-                        {
-                            Place = columns[0].InnerText,
-                            Name = columns[1].Descendants("a").First().InnerText,
-                            KongsveienPoints = kongsveienPointsColumn != null ? kongsveienPointsColumn.InnerText : string.Empty,
-                            KongsveienTime = kongsveienTimeColumn != null ? kongsveienTimeColumn.InnerText : string.Empty,
-                            TryvannPoints = tryvannPointsColumn != null ? tryvannPointsColumn.InnerText : string.Empty,
-                            TryvannTime = tryvannTimeColumn != null ? tryvannTimeColumn.InnerText : string.Empty,
-                            GrefsenPoints = grefsenPointsColumn != null ? grefsenPointsColumn.InnerText : string.Empty,
-                            GrefsenTime = grefsenTimeColumn != null ? grefsenTimeColumn.InnerText : string.Empty,
-                            TotalPoints = columns[5].InnerText
-                        };
-                    }).ToList();
 
-                    var ciberClimbers = climbers.Where(x => ciberNames.Contains(x.Name)).ToList();
-                    foreach (var rider in ciberClimbers)
-                    {
-                        var cmodel = new ClimberModels
+                        string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
+                        var result = client.GetStreamAsync(url).Result;
+                        var doc = new HtmlAgilityPack.HtmlDocument();
+                        doc.Load(result, Encoding.GetEncoding("ISO-8859-1"));
+                        var tables = doc.DocumentNode.Descendants("table").ToList();
+
+                        var table =
+                            tables.First(
+                                x =>
+                                x.Attributes.Any(
+                                    y => y.Name == "class" && y.Value == "table table-condensed leaderboard"));
+                        var climbers = table.Descendants("tr").Skip(1).Select(
+                            x =>
+                                {
+                                    var columns = x.Descendants("td").ToList();
+                                    var kongsveienPointsColumn = columns[2].Descendants("b").FirstOrDefault();
+                                    var kongsveienTimeColumn = columns[2].Descendants("a").FirstOrDefault();
+                                    var grefsenPointsColumn = columns[3].Descendants("b").FirstOrDefault();
+                                    var grefsenTimeColumn = columns[3].Descendants("a").FirstOrDefault();
+                                    var tryvannPointsColumn = columns[4].Descendants("b").FirstOrDefault();
+                                    var tryvannTimeColumn = columns[4].Descendants("a").FirstOrDefault();
+                                    return
+                                        new
+                                            {
+                                                Place = columns[0].InnerText,
+                                                Name = columns[1].Descendants("a").First().InnerText,
+                                                KongsveienPoints =
+                                                    kongsveienPointsColumn != null
+                                                        ? kongsveienPointsColumn.InnerText
+                                                        : string.Empty,
+                                                KongsveienTime =
+                                                    kongsveienTimeColumn != null
+                                                        ? kongsveienTimeColumn.InnerText
+                                                        : string.Empty,
+                                                TryvannPoints =
+                                                    tryvannPointsColumn != null
+                                                        ? tryvannPointsColumn.InnerText
+                                                        : string.Empty,
+                                                TryvannTime =
+                                                    tryvannTimeColumn != null ? tryvannTimeColumn.InnerText : string.Empty,
+                                                GrefsenPoints =
+                                                    grefsenPointsColumn != null
+                                                        ? grefsenPointsColumn.InnerText
+                                                        : string.Empty,
+                                                GrefsenTime =
+                                                    grefsenTimeColumn != null ? grefsenTimeColumn.InnerText : string.Empty,
+                                                TotalPoints = columns[5].InnerText
+                                            };
+                                }).ToList();
+
+                        var ciberClimbers = climbers.Where(x => ciberNames.Contains(x.Name)).ToList();
+                        foreach (var rider in ciberClimbers)
                         {
-                            Name = rider.Name,
-                            Place = rider.Place,
-                            KongsveienPoints = rider.KongsveienPoints,
-                            KongsveienTime = rider.KongsveienTime,
-                            TryvannPoints = rider.TryvannPoints,
-                            TryvannTime = rider.TryvannTime,
-                            GrefsenPoint = rider.GrefsenPoints,
-                            GrefsenTime = rider.GrefsenTime,
-                            TotalPoints = rider.TotalPoints
-                        };
-                        climberList.Add(cmodel);
+                            var cmodel = new ClimberModels
+                                             {
+                                                 Name = rider.Name,
+                                                 Place = rider.Place,
+                                                 KongsveienPoints = rider.KongsveienPoints,
+                                                 KongsveienTime = rider.KongsveienTime,
+                                                 TryvannPoints = rider.TryvannPoints,
+                                                 TryvannTime = rider.TryvannTime,
+                                                 GrefsenPoint = rider.GrefsenPoints,
+                                                 GrefsenTime = rider.GrefsenTime,
+                                                 TotalPoints = rider.TotalPoints
+                                             };
+                            climberList.Add(cmodel);
+                        }
                     }
                 }
                 catch (Exception e)
