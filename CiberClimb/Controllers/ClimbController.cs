@@ -48,7 +48,7 @@ namespace CiberClimbApi.Controllers
 
         public List<ClimberModels> GetClimberModels(int page)
         {
-            const string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
+            string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
 
             var climberList = new List<ClimberModels>();
             using (var client = new HttpClient())
