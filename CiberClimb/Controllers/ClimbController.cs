@@ -22,7 +22,11 @@ namespace CiberClimbApi.Controllers
 
             SlackClient client = new SlackClient(urlWithAccessToken);
 
-            var climbers = this.GetClimberModels();
+            var climbers = this.GetClimberModels(1);
+            for (int i = 1; i < 3; i++)
+            {
+                climbers.AddRange(this.GetClimberModels(i));
+            }
             var tekst = string.Empty;
 
             tekst += "```";
@@ -42,14 +46,14 @@ namespace CiberClimbApi.Controllers
             return tekst;
         }
 
-        public List<ClimberModels> GetClimberModels()
+        public List<ClimberModels> GetClimberModels(int page)
         {
-            const string url = "http://www.klatrekonge.com/herrer-oslo";
+            const string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
 
             var climberList = new List<ClimberModels>();
             using (var client = new HttpClient())
             {
-                var ciberNames = new[] { "Mathias Moen", "Richard Martinsen", "Joakim Bjerkheim" };
+                var ciberNames = new[] { "Mathias Moen", "Richard Martinsen", "Joakim Bjerkheim", "Kyrre Havik Eriksen" };
 
                 try
                 {
