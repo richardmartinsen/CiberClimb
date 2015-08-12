@@ -53,7 +53,7 @@ namespace CiberClimbApi.Controllers
 
                 try
                 {
-                    for (int page = 0; page < 3; page++)
+                    for (int page = 0; page < 10; page++)
                     {
 
                         string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
