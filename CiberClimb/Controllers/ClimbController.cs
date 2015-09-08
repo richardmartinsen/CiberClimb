@@ -5,8 +5,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Xml.Schema;
+using CiberClimb.Services;
 using Newtonsoft.Json;
 
 namespace CiberClimbApi.Controllers
@@ -16,13 +18,15 @@ namespace CiberClimbApi.Controllers
     public class ClimbController : ApiController
     {
         [HttpPost]
-        public string Post()
+        public async Task<string> Post()
         {
             string urlWithAccessToken = "https://hooks.slack.com/services/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";
 
             SlackClient client = new SlackClient(urlWithAccessToken);
 
-            var climbers = this.GetClimberModels();
+            ClimberService cs = new ClimberService();
+            var climbers = await cs.GetClimberModels();
+            //var climbers = this.GetClimberModels();
             var tekst = string.Empty;
 
             tekst += "```";
@@ -41,132 +45,6 @@ namespace CiberClimbApi.Controllers
                                 channel: "#sykkelgruppa");
             return tekst;
         }
-
-        public List<ClimberModels> GetClimberModels()
-        {
-            //string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
-
-            var climberList = new List<ClimberModels>();
-            using (var client = new HttpClient())
-            {
-                var ciberNames = new[] { "Mathias Moen", "Richard Martinsen", "Joakim Bjerkheim", "Kyrre Havik Eriksen", "Morten Midttun", "Kjetil Kronkvist", "Aleks Gisvold", "Magnus Moltzau", "Torstein Jensen", "Njaal Gjerde", "Håvard Vegge", "Jo Mehmet Sollihagen" };
-
-                try
-                {
-                    for (int page = 0; page < 11; page++)
-                    {
-
-                        string url = "http://www.klatrekonge.com/herrer-oslo?page=" + page;
-                        var result = client.GetStreamAsync(url).Result;
-                        var doc = new HtmlAgilityPack.HtmlDocument();
-                        doc.Load(result, Encoding.GetEncoding("ISO-8859-1"));
-                        var tables = doc.DocumentNode.Descendants("table").ToList();
-
-                        var table =
-                            tables.First(
-                                x =>
-                                x.Attributes.Any(
-                                    y => y.Name == "class" && y.Value == "table table-condensed leaderboard"));
-                        var climbers = table.Descendants("tr").Skip(1).Select(
-                            x =>
-                                {
-                                    var columns = x.Descendants("td").ToList();
-                                    var kongsveienPointsColumn = columns[2].Descendants("b").FirstOrDefault();
-                                    var kongsveienTimeColumn = columns[2].Descendants("a").FirstOrDefault();
-                                    var grefsenPointsColumn = columns[3].Descendants("b").FirstOrDefault();
-                                    var grefsenTimeColumn = columns[3].Descendants("a").FirstOrDefault();
-                                    var tryvannPointsColumn = columns[4].Descendants("b").FirstOrDefault();
-                                    var tryvannTimeColumn = columns[4].Descendants("a").FirstOrDefault();
-                                    return
-                                        new
-                                            {
-                                                Place = columns[0].InnerText,
-                                                Name = columns[1].Descendants("a").First().InnerText,
-                                                KongsveienPoints =
-                                                    kongsveienPointsColumn != null
-                                                        ? kongsveienPointsColumn.InnerText
-                                                        : string.Empty,
-                                                KongsveienTime =
-                                                    kongsveienTimeColumn != null
-                                                        ? kongsveienTimeColumn.InnerText
-                                                        : string.Empty,
-                                                TryvannPoints =
-                                                    tryvannPointsColumn != null
-                                                        ? tryvannPointsColumn.InnerText
-                                                        : string.Empty,
-                                                TryvannTime =
-                                                    tryvannTimeColumn != null ? tryvannTimeColumn.InnerText : string.Empty,
-                                                GrefsenPoints =
-                                                    grefsenPointsColumn != null
-                                                        ? grefsenPointsColumn.InnerText
-                                                        : string.Empty,
-                                                GrefsenTime =
-                                                    grefsenTimeColumn != null ? grefsenTimeColumn.InnerText : string.Empty,
-                                                TotalPoints = columns[5].InnerText
-                                            };
-                                }).ToList();
-
-                        var ciberClimbers = climbers.Where(x => ciberNames.Contains(x.Name)).ToList();
-                        foreach (var rider in ciberClimbers)
-                        {
-                            var cmodel = new ClimberModels
-                                             {
-                                                 Name = rider.Name,
-                                                 Place = rider.Place,
-                                                 KongsveienPoints = rider.KongsveienPoints,
-                                                 KongsveienTime = rider.KongsveienTime,
-                                                 TryvannPoints = rider.TryvannPoints,
-                                                 TryvannTime = rider.TryvannTime,
-                                                 GrefsenPoint = rider.GrefsenPoints,
-                                                 GrefsenTime = rider.GrefsenTime,
-                                                 TotalPoints = rider.TotalPoints
-                                             };
-                            climberList.Add(cmodel);
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    //var message = string.Format("Failed downloading stockchange info{0}{1}", Environment.NewLine, e);
-                    //Trace.TraceError(message);
-                    //_emailService.Send("perkristianhelland@gmail.com", "HPMC Nordnet fetch failed", message);
-                    //return Enumerable.Empty<StockChange>();
-                }
-
-                //data = client.DownloadString(url);
-            }
-
-            return climberList;
-        } 
-
-
-
-        //// GET api/values
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET api/values/5
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        //// POST api/values
-        //public void Post([FromBody]string value)
-        //{
-        //}
-
-        //// PUT api/values/5
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
-        //// DELETE api/values/5
-        //public void Delete(int id)
-        //{
-        //}
     }
 
     public class SlackClient
