@@ -49,7 +49,7 @@ namespace CiberClimbApi.Controllers
             var climberList = new List<ClimberModels>();
             using (var client = new HttpClient())
             {
-                var ciberNames = new[] { "Mathias Moen", "Richard Martinsen", "Joakim Bjerkheim", "Kyrre Havik Eriksen", "Morten Midttun", "Kjetil Kronkvist", "Aleks Gisvold", "Magnus Moltzau", "Torstein Jensen", "Njaal Gjerde", "Håvard Vegge" };
+                var ciberNames = new[] { "Mathias Moen", "Richard Martinsen", "Joakim Bjerkheim", "Kyrre Havik Eriksen", "Morten Midttun", "Kjetil Kronkvist", "Aleks Gisvold", "Magnus Moltzau", "Torstein Jensen", "Njaal Gjerde", "Håvard Vegge", "Jo Mehmet Sollihagen" };
 
                 try
                 {
