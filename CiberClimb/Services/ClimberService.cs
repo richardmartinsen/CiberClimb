@@ -24,7 +24,7 @@ namespace CiberClimb.Services
 
                 try
                 {
-                    var urls = Enumerable.Range(0, 10).Select(x => "http://www.klatrekonge.com/herrer-oslo?page=" + x);
+                    var urls = Enumerable.Range(0, 11).Select(x => "http://www.klatrekonge.com/herrer-oslo?page=" + x);
                     var resultTasks = urls.Select(url => client.GetStreamAsync(url)).ToList();
                     await Task.WhenAll(resultTasks);
 
