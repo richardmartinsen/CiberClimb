@@ -20,7 +20,7 @@ namespace CiberClimb.Services
                 var ciberNames = new[] { "Mathias Moen", "Richard Martinsen", "Joakim Bjerkheim", 
                                          "Kyrre Havik Eriksen", "Morten Midttun", "Kjetil Kronkvist", 
                                          "Aleks Gisvold", "Magnus Moltzau", "Torstein Jensen", 
-                                         "Njaal Gjerde", "Håvard Vegge", "Jørgen Bugge", "Geir Sande", "Rafa S"};
+                                         "Njaal Gjerde", "Håvard Vegge", "Jørgen Bugge", "Geir Sande", "Rafa S", "Terje Rabben"};
 
                 try
                 {
