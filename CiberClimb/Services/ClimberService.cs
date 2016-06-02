@@ -21,7 +21,7 @@ namespace CiberClimb.Services
                                          "Kyrre Havik Eriksen", "Morten Midttun", "Kjetil Kronkvist", 
                                          "Aleks Gisvold", "Magnus Moltzau", "Torstein Jensen", 
                                          "Njaal Gjerde", "Håvard Vegge", "Jørgen Bugge", "Geir Sande", "Rafa S", "Terje Rabben",
-                                         "Katrine Hoff Quirk"
+                                         "Katrine Hoff Quirk, "Pavlo Prykhodko"
                 };
 
                 try
