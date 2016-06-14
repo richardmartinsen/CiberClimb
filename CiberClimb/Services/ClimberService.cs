@@ -17,11 +17,24 @@ namespace CiberClimb.Services
             var climberList = new List<ClimberModels>();
             using (var client = new HttpClient())
             {
-                var ciberNames = new[] { "Mathias Moen", "Richard Martinsen", "Joakim Bjerkheim", 
-                                         "Kyrre Havik Eriksen", "Morten Midttun", "Kjetil Kronkvist", 
-                                         "Aleks Gisvold", "Magnus Moltzau", "Torstein Jensen", 
-                                         "Njaal Gjerde", "Håvard Vegge", "Jørgen Bugge", "Geir Sande", "Rafa S", "Terje Rabben",
-                                         "Katrine Hoff Quirk", "Pavlo Prykhodko"
+                var ciberNames = new[] { 
+                    "Mathias Moen",
+                    "Richard Martinsen", 
+                    "Joakim Bjerkheim", 
+                    "Kyrre Havik Eriksen", 
+                    "Morten Midttun", 
+                    "Kjetil Kronkvist",
+                    "Aleks Gisvold", 
+                    "Magnus Moltzau", 
+                    "Torstein Jensen",
+                    "Njaal Gjerde", 
+                    "Håvard Vegge", 
+                    "Jørgen Bugge", 
+                    "Geir Sande", 
+                    "Rafa S", 
+                    "Terje Rabben",
+                    "Pavlo Prykhodko",
+                    "Katrine Hoff Quirk"
                 };
 
                 try
