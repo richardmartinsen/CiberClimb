@@ -31,8 +31,7 @@ namespace CiberClimb.Services
                     "Rafa S", 
                     "Terje Rabben",
                     "Pavlo Prykhodko",
-                    "Katrine Hoff Quirk",
-                    "Pavlo Prykhodko"
+                    "Katrine Hoff Quirk"
                 };
 
                 try
