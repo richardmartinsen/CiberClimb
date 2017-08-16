@@ -32,7 +32,8 @@ namespace CiberClimb.Services
                     "Terje Rabben",
                     "Pavlo Prykhodko",
                     "Katrine Hoff Quirk",
-                    "Magnus Jerre"
+                    "Magnus Jerre",
+                    "Ivan Milano"
                 };
 
                 try
